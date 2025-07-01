@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home</title>
+  <link rel="shortcut icon" href="home_icon.png" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      background: #1e1e2a;
+      color: #e5e5e5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .google {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 8% 0 4%;
+    }
+
+    .google img {
+      max-width: 420px;
+      width: 80%;
+      margin-bottom: 24px;
+    }
+
+    form.search {
+      width: 600px;
+      max-width: 90%;
+      display: flex;
+    }
+
+    form.search input {
+      flex: 1;
+      height: 42px;
+      background: #2a2a3c;
+      color: #e5e5e5;
+      border: 2px solid #2a2a3c;
+      border-radius: 50px 0 0 50px;
+      padding: 0 20px;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    form.search input:hover,
+    form.search input:focus {
+      background: #1e1e2a;
+      border-color: #4c4c6f;
+    }
+
+    form.search button {
+      width: 120px;
+      border: none;
+      background: #e5e5e5;
+      color: #1e1e2a;
+      border-radius: 0 50px 50px 0;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    form.search button:hover {
+      background: #2a2a3c;
+      color: #e5e5e5;
+    }
+
+    .bookmark-grid {
+      flex: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      padding: 24px 5%;
+      background: #2a2a3c;
+      border-radius: 25px;
+      margin: 0 10% 100px;
+    }
+
+    .bookmark-card {
+      position: relative;
+      width: 120px;
+    }
+
+    .bookmark-card.drag-over {
+      outline: 2px dashed #e5e5e5;
+    }
+
+    .bookmark {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: #e5e5e5;
+      background: #1e1e2a66;
+      padding: 18px 10px 14px;
+      border-radius: 15px;
+      transition: 0.3s;
+    }
+
+    .bookmark:hover {
+      background: #1e1e2a;
+      transform: scale(1.08);
+    }
+
+    .bookmark img {
+      margin-bottom: 10px;
+      image-rendering: pixelated;
+    }
+
+    .bookmark h4 {
+      font-size: 1.05rem;
+      text-align: center;
+      word-break: break-word;
+    }
+
+    .menu-btn {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: transparent;
+      border: none;
+      color: #e5e5e5;
+      font-size: 1.3rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .menu-btn:hover {
+      color: #1e1e2a;
+    }
+
+    .card-menu {
+      position: absolute;
+      top: 30px;
+      right: 6px;
+      background: #2a2a3c;
+      border: 1px solid #1e1e2a;
+      border-radius: 8px;
+      padding: 6px 0;
+      display: none;
+      flex-direction: column;
+      z-index: 20;
+    }
+
+    .card-menu button {
+      background: transparent;
+      border: none;
+      color: #e5e5e5;
+      padding: 6px 20px;
+      text-align: left;
+      width: 100%;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+    }
+
+    .card-menu button:hover {
+      background: #1e1e2a;
+    }
+
+    #fab {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #e5e5e5;
+      color: #1e1e2a;
+      font-size: 2.4rem;
+      line-height: 60px;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      transition: 0.3s;
+      z-index: 998;
+    }
+
+    #fab:hover {
+      transform: scale(1.1);
+    }
+
+    #modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      visibility: hidden;
+      opacity: 0;
+      transition: 0.3s;
+      z-index: 999;
+    }
+
+    #modal.show {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .modal-content {
+      background: #2a2a3c;
+      padding: 32px 40px;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 380px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-content h3 {
+      text-align: center;
+    }
+
+    .modal-content input {
+      background: #1e1e2a;
+      border: 2px solid #1e1e2a;
+      color: #e5e5e5;
+      border-radius: 12px;
+      padding: 10px 16px;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    .modal-content input:focus {
+      border-color: #4c4c6f;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .btn {
+      background: #e5e5e5;
+      color: #1e1e2a;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .btn.cancel {
+      background: #777;
+      color: #fff;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="google">
+    <img src="google logo.png" alt="Google logo" />
+    <form class="search" action="https://www.google.com/search" method="get" target="_blank">
+      <input type="text" name="q" placeholder="Search Google…" required />
+      <button type="submit">Search</button>
+    </form>
+  </div>
+  <div class="bookmark-grid" id="bookmark-grid"></div>
+  <div id="fab" title="Add bookmark">+</div>
+  <div id="modal">
+    <div class="modal-content">
+      <h3 id="modal-title">Add Bookmark</h3>
+      <input type="text" id="bm-name" placeholder="Site name" />
+      <input type="url" id="bm-url" placeholder="https://example.com" />
+      <div class="modal-actions">
+        <button class="btn cancel" id="cancel-btn">Cancel</button>
+        <button class="btn" id="save-btn">Save</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    const storageKey = 'bookmarks'; let editIndex = null;
+    const modal = document.getElementById('modal'), fab = document.getElementById('fab'), saveBtn = document.getElementById('save-btn'), cancelBtn = document.getElementById('cancel-btn'), nameInput = document.getElementById('bm-name'), urlInput = document.getElementById('bm-url'), modalTitle = document.getElementById('modal-title'), grid = document.getElementById('bookmark-grid');
+
+    function getBookmarks() { try { return JSON.parse(localStorage.getItem(storageKey)) || [] } catch { return [] } }
+    function saveBookmarks(arr) { localStorage.setItem(storageKey, JSON.stringify(arr)) }
+
+    function renderBookmarks() {
+      grid.innerHTML = '';
+      let bms = getBookmarks();
+      if (bms.length === 0) {
+        bms = [{ name: 'SKExtra', url: 'https://skextra.github.io/Portfolio/', icon: 'skextra.png' }];
+        saveBookmarks(bms);
+      }
+      bms.forEach((bm, idx) => {
+        const card = document.createElement('div');
+        card.className = 'bookmark-card';
+        card.draggable = true;
+        let iconSrc = '';
+        if (bm.icon) {
+          iconSrc = bm.icon;
+        } else {
+          iconSrc = `https://www.google.com/s2/favicons?sz=64&domain=${bm.url}`;
+        }
+        card.innerHTML = `<a class="bookmark" href="${bm.url}" target="_blank">
+            <img src="${iconSrc}" width="50" height="50" alt="icon" onerror="this.onerror=null;this.src='globe.png';"/>
+            <h4>${bm.name}</h4>
+          </a>
+          <button class="menu-btn" onclick="toggleMenu(this)">&#8942;</button>
+          <div class="card-menu">
+            <button onclick="openModal(true,${idx})">Edit</button>
+            <button onclick="deleteBookmark(${idx})">Remove</button>
+          </div>`;
+        card.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', idx) });
+        card.addEventListener('dragover', e => { e.preventDefault(); card.classList.add('drag-over') });
+        card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
+        card.addEventListener('drop', e => { e.preventDefault(); card.classList.remove('drag-over'); const from = +e.dataTransfer.getData('text/plain'); reorderBookmarks(from, idx) });
+        grid.appendChild(card);
+      })
+    }
+
+    function openModal(isEdit = false, idx = null) {
+      closeMenus();
+      modal.classList.add('show');
+      if (isEdit) {
+        const bm = getBookmarks()[idx];
+        nameInput.value = bm.name;
+        urlInput.value = bm.url;
+        modalTitle.textContent = 'Edit Bookmark';
+        editIndex = idx;
+      } else {
+        modalTitle.textContent = 'Add Bookmark';
+        nameInput.value = '';
+        urlInput.value = '';
+        editIndex = null;
+      }
+      nameInput.focus();
+    }
+    function closeModal() { modal.classList.remove('show'); editIndex = null; }
+
+    function deleteBookmark(idx) {
+      const bms = getBookmarks();
+      bms.splice(idx, 1);
+      saveBookmarks(bms);
+      renderBookmarks();
+    }
+    function reorderBookmarks(from, to) {
+      if (from === to) return;
+      let bms = getBookmarks();
+      bms.splice(to, 0, bms.splice(from, 1)[0]);
+      saveBookmarks(bms);
+      renderBookmarks();
+    }
+
+    function toggleMenu(btn) {
+      const menu = btn.nextElementSibling;
+      const open = menu.style.display === 'flex';
+      closeMenus();
+      if (!open) menu.style.display = 'flex';
+    }
+    function closeMenus() {
+      document.querySelectorAll('.card-menu').forEach(m => m.style.display = 'none');
+    }
+    document.addEventListener('click', e => { if (!e.target.closest('.bookmark-card')) closeMenus() });
+
+    saveBtn.addEventListener('click', () => {
+      const name = nameInput.value.trim(), url = urlInput.value.trim();
+      if (!name || !url) return alert('Fill both fields');
+      let bms = getBookmarks();
+      if (editIndex !== null) {
+        bms[editIndex] = { name, url };
+      } else {
+        bms.push({ name, url });
+      }
+      saveBookmarks(bms);
+      closeModal();
+      renderBookmarks();
+    });
+    cancelBtn.addEventListener('click', closeModal);
+    fab.addEventListener('click', () => openModal());
+
+    window.openModal = openModal; window.deleteBookmark = deleteBookmark; window.toggleMenu = toggleMenu;
+    document.addEventListener('DOMContentLoaded', renderBookmarks);
+  </script>
+</body>
+
+</html>
